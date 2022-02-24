@@ -6,12 +6,23 @@
 // 메뉴가 추가되고 나면, input은 빈 값으로 초기화한다.
 // 사용자 입력값이 빈 값이라면 추가되지 않는다.
 
+// TODO 메뉴 수정
+// 메뉴의 수정 버튼을 누르면 prompt 창이 뜬다.
+// 신규 메뉴명을 입력받고 확인 버튼을 누르면 메뉴 이름이 수정된다.
+
+// TODO 메뉴 삭제
+// 메뉴 삭제 버튼을 누르면 confirm 창이 뜬다.
+// 확인 버튼을 누르면 메뉴가 삭제된다.
+
 const $ = (selector) => document.querySelector(selector);
-let menuCount = 0;
 
 function App() {
-  $('#espresso-menu-form').addEventListener('submit', (e) => {
-    e.preventDefault();
+  const updateMenuCount = () => {
+    const menuCount = $('#espresso-menu-list').querySelectorAll('li').length;
+    $('.menu-count').innerText = `총 ${menuCount}개`;
+  };
+
+  const addMenuName = () => {
     const menuName = $('#espresso-menu-name').value;
     const menuItemTemplate = `<li class="menu-list-item d-flex items-center py-2">
     <span class="w-100 pl-2 menu-name">${menuName}</span>
@@ -30,7 +41,7 @@ function App() {
     </li>`;
 
     if (menuName === '') {
-      alert('메뉴를 입력해주세요.');
+      alert('메뉴명을 입력해주세요.');
       return;
     }
 
@@ -44,18 +55,40 @@ function App() {
     $('#espresso-menu-list').insertAdjacentHTML('beforeend', menuItemTemplate)
     $('#espresso-menu-name').value = '';
 
-    menuCount++;
-    $('.menu-count').innerText = `총 ${menuCount}개`;
+    updateMenuCount();
+  };
+
+  const updateMenuName = (e) => {
+    const $menuName = e.target.closest('li').querySelector(".menu-name");
+    const newMenuName = prompt("메뉴명을 수정하세요.", $menuName.innerText);
+
+    if (newMenuName === '') {
+      alert('메뉴명을 입력해주세요!');
+    } else if (newMenuName !== null) {
+      $menuName.innerText = newMenuName;
+    }
+  };
+
+  const removeMenuName = (e) => {
+    if (confirm("정말 삭제하시겠습니까?")) {
+      e.target.closest('li').remove();
+      updateMenuCount();
+    }
+  };
+
+  $('#espresso-menu-list').addEventListener('click', e => {
+    if (e.target.classList.contains('menu-edit-button')) {
+      updateMenuName(e);
+    }
+    if (e.target.classList.contains('menu-remove-button')) {
+      removeMenuName(e);
+    }
+  });
+
+  $('#espresso-menu-form').addEventListener('submit', e => {
+    e.preventDefault();
+    addMenuName();
   });
 }
 
 App();
-
-
-// TODO 메뉴 수정
-// 메뉴의 수정 버튼을 누르면 prompt 창이 뜬다.
-// 신규 메뉴명을 입력받고 확인 버튼을 누르면 메뉴 이름이 수정된다.
-
-// TODO 메뉴 삭제
-// 메뉴 삭제 버튼을 누르면 confirm 창이 뜬다.
-// 확인 버튼을 누르면 메뉴가 삭제된다.
