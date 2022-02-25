@@ -1,13 +1,5 @@
-const $ = selector => document.querySelector(selector);
-
-const store = {
-	setLocalStorage(menu) {
-		localStorage.setItem("menu", JSON.stringify(menu));
-	},
-	getLocalStorage() {
-		return JSON.parse(localStorage.getItem("menu"));
-	},
-};
+import { $ } from "./utils/dom.js";
+import store from "./store/index.js";
 
 function App() {
 	// 상태는 변하는 데이터! (메뉴명)
@@ -24,6 +16,7 @@ function App() {
 			this.menu = store.getLocalStorage();
 		}
 		render();
+		initEventListeners();
 	};
 
 	const render = () => {
@@ -61,7 +54,7 @@ function App() {
 	};
 
 	const updateMenuCount = () => {
-		const menuCount = $("#menu-list").querySelectorAll("li").length;
+		const menuCount = this.menu[this.currentCategory].length;
 		$(".menu-count").innerText = `총 ${menuCount}개`;
 	};
 
@@ -88,7 +81,7 @@ function App() {
 		if (newMenuName === "") {
 			alert("메뉴명을 입력해주세요!");
 		} else if (newMenuName !== null) {
-			$menuName.innerText = newMenuName;
+			render();
 		}
 	};
 
@@ -97,8 +90,7 @@ function App() {
 			const menuId = e.target.closest("li").dataset.menuId;
 			this.menu[this.currentCategory].splice(menuId, 1);
 			store.setLocalStorage(this.menu);
-			e.target.closest("li").remove();
-			updateMenuCount();
+			render();
 		}
 	};
 
@@ -110,35 +102,37 @@ function App() {
 		render();
 	};
 
-	$("#menu-list").addEventListener("click", e => {
-		if (e.target.classList.contains("menu-edit-button")) {
-			updateMenuName(e);
-			return;
-		}
-		if (e.target.classList.contains("menu-remove-button")) {
-			removeMenuName(e);
-			return;
-		}
-		if (e.target.classList.contains("menu-sold-out-button")) {
-			soldOutMenu(e);
-			return;
-		}
-	});
+	const initEventListeners = () => {
+		$("#menu-list").addEventListener("click", e => {
+			if (e.target.classList.contains("menu-edit-button")) {
+				updateMenuName(e);
+				return;
+			}
+			if (e.target.classList.contains("menu-remove-button")) {
+				removeMenuName(e);
+				return;
+			}
+			if (e.target.classList.contains("menu-sold-out-button")) {
+				soldOutMenu(e);
+				return;
+			}
+		});
 
-	$("#menu-form").addEventListener("submit", e => {
-		e.preventDefault();
-		addMenuName();
-	});
+		$("#menu-form").addEventListener("submit", e => {
+			e.preventDefault();
+			addMenuName();
+		});
 
-	$("nav").addEventListener("click", e => {
-		const isCategoryButton = e.target.classList.contains("cafe-category-name");
-		if (isCategoryButton) {
-			const categoryName = e.target.dataset.categoryName;
-			this.currentCategory = categoryName;
-			$("#category-title").innerText = `${e.target.innerText} 메뉴 관리`;
-			render();
-		}
-	});
+		$("nav").addEventListener("click", e => {
+			const isCategoryButton = e.target.classList.contains("cafe-category-name");
+			if (isCategoryButton) {
+				const categoryName = e.target.dataset.categoryName;
+				this.currentCategory = categoryName;
+				$("#category-title").innerText = `${e.target.innerText} 메뉴 관리`;
+				render();
+			}
+		});
+	};
 }
 
 const app = new App();
