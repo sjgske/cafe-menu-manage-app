@@ -1,8 +1,15 @@
 import { $ } from "./utils/dom.js";
 import store from "./store/index.js";
 
+const BASE_URL = "http://localhost:3000/api";
+const MenuApi = {
+	async getAllMenuByCategory(category) {
+		const response = await fetch(`${BASE_URL}/category/${category}/menu`);
+		return response.json();
+	},
+};
+
 function App() {
-	// 상태는 변하는 데이터! (메뉴명)
 	this.menu = {
 		espresso: [],
 		frappuccino: [],
@@ -11,10 +18,8 @@ function App() {
 		desert: [],
 	};
 	this.currentCategory = "espresso";
-	this.init = () => {
-		if (store.getLocalStorage()) {
-			this.menu = store.getLocalStorage();
-		}
+	this.init = async () => {
+		this.menu[this.currentCategory] = await MenuApi.getAllMenuByCategory(this.currentCategory);
 		render();
 		initEventListeners();
 	};
@@ -58,11 +63,20 @@ function App() {
 		$(".menu-count").innerText = `총 ${menuCount}개`;
 	};
 
-	const addMenuName = () => {
+	const addMenuName = async () => {
 		const menuName = $("#menu-name").value;
-		this.menu[this.currentCategory].push({ name: menuName });
-		store.setLocalStorage(this.menu);
 
+		await fetch(`${BASE_URL}/category/${this.currentCategory}/menu`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({ name: menuName }),
+		}).then(response => {
+			return response.json();
+		});
+
+		this.menu[this.currentCategory] = await MenuApi.getAllMenuByCategory(this.currentCategory);
 		if (menuName === "") {
 			alert("메뉴명을 입력해주세요.");
 			return;
