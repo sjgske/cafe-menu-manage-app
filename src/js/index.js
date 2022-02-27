@@ -31,17 +31,17 @@ const MenuApi = {
 			console.error("에러가 발생했습니다.");
 		}
 	},
-	async deleteMenu(category, menuId) {
-		const response = await fetch(`${BASE_URL}/category/${category}/menu/${menuId}`, {
-			method: "DELETE",
+	async toggleSoldOutMenu(category, menuId) {
+		const response = await fetch(`${BASE_URL}/category/${category}/menu/${menuId}/soldout`, {
+			method: "PUT",
 		});
 		if (!response.ok) {
 			console.error("에러가 발생했습니다.");
 		}
 	},
-	async toggleSoldOutMenu(category, menuId) {
-		const response = await fetch(`${BASE_URL}/category/${category}/menu/${menuId}/soldout`, {
-			method: "PUT",
+	async deleteMenu(category, menuId) {
+		const response = await fetch(`${BASE_URL}/category/${category}/menu/${menuId}`, {
+			method: "DELETE",
 		});
 		if (!response.ok) {
 			console.error("에러가 발생했습니다.");
