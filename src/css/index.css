@@ -1,11 +1,11 @@
-@import './shared/index.css';
-@import './ui/index.css';
+@import "./shared/index.css";
+@import "./ui/index.css";
 
 html,
 body {
 	margin: 0;
 	height: 100%;
-	font-family: 'Noto Sans KR', sans-serif;
+	font-family: "Noto Sans KR", sans-serif;
 	font-size: 1rem;
 	font-weight: normal;
 	line-height: 1.5;
@@ -23,7 +23,7 @@ a {
 
 button,
 input {
-	font-family: 'Noto Sans KR', sans-serif;
+	font-family: "Noto Sans KR", sans-serif;
 }
 
 .header {
