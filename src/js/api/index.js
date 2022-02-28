@@ -48,23 +48,32 @@ const requestWithoutJson = async (url, option) => {
 	return response;
 };
 
-// 서버 비동기 통신
+// api 비동기 요청
 const MenuApi = {
+	// 메뉴 리스트 불러오기
 	async getAllMenuByCategory(category) {
 		return request(`${BASE_URL}/category/${category}/menu`);
 	},
+
+	// 메뉴 추가
 	async createMenu(category, name) {
 		return request(`${BASE_URL}/category/${category}/menu`, HTTP_METHOD.POST({ name }));
 	},
+
+	// 메뉴 수정
 	async updateMenu(category, name, menuId) {
 		return request(`${BASE_URL}/category/${category}/menu/${menuId}`, HTTP_METHOD.PUT({ name }));
 	},
+
+	// 메뉴 삭제
 	async deleteMenu(category, menuId) {
 		return requestWithoutJson(
 			`${BASE_URL}/category/${category}/menu/${menuId}`,
 			HTTP_METHOD.DELETE(),
 		);
 	},
+
+	// 품절 메뉴 토글
 	async toggleSoldOutMenu(category, menuId) {
 		return request(`${BASE_URL}/category/${category}/menu/${menuId}/soldout`, HTTP_METHOD.PUT());
 	},
